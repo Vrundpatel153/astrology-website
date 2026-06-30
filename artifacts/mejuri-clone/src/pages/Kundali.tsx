@@ -154,158 +154,178 @@ function VedicMandala({ lagna = 0 }: { lagna?: number }) {
   ];
 
   return (
-    <div className="relative w-[320px] h-[320px] shrink-0 flex items-center justify-center select-none">
+    <div className="relative w-[380px] h-[380px] md:w-[480px] md:h-[480px] shrink-0 flex items-center justify-center select-none">
       <svg viewBox="-165 -165 330 330" className="absolute inset-0 w-full h-full overflow-visible">
 
-        {/* ── Outermost decorative ring (static) ── */}
-        <circle cx={0} cy={0} r={labelR + 16}
-          fill="none" stroke="rgba(200,169,81,0.15)" strokeWidth="0.5"
-        />
-
-        {/* ── Outer ring circle — STATIC ── */}
-        <circle cx={0} cy={0} r={outerR}
-          fill="none" stroke="rgba(200,169,81,0.55)" strokeWidth="1.2"
-        />
-
-        {/* ── ROTATING layer: only tick marks spin, no labels ── */}
-        <motion.g
-          animate={{ rotate: 360 }}
-          style={{ originX: "0px", originY: "0px" }}
-          transition={{ duration: 360, repeat: Infinity, ease: "linear" }}
-        >
-          {/* Major ticks at every 30° */}
-          {Array.from({ length: 12 }, (_, i) => {
-            const a = (i * 30 - 90) * (Math.PI / 180);
-            return (
-              <line key={i}
-                x1={(outerR - 7) * Math.cos(a)} y1={(outerR - 7) * Math.sin(a)}
-                x2={(outerR + 7) * Math.cos(a)} y2={(outerR + 7) * Math.sin(a)}
-                stroke="rgba(200,169,81,0.75)" strokeWidth="1.2"
-              />
-            );
-          })}
-          {/* Minor ticks at every 10° */}
-          {Array.from({ length: 36 }, (_, i) => {
-            if (i % 3 === 0) return null;
-            const a = (i * 10 - 90) * (Math.PI / 180);
-            return (
-              <line key={i}
-                x1={(outerR - 3) * Math.cos(a)} y1={(outerR - 3) * Math.sin(a)}
-                x2={(outerR + 3) * Math.cos(a)} y2={(outerR + 3) * Math.sin(a)}
-                stroke="rgba(200,169,81,0.3)" strokeWidth="0.7"
-              />
-            );
-          })}
-        </motion.g>
-
-        {/* ── STATIC: zodiac icons + connector lines + diamond markers ── */}
-        {zodiacPaths.map(([name, path], i) => {
-          const a      = (i * 30 - 90) * (Math.PI / 180);
-          const lx     = labelR * Math.cos(a);
-          const ly     = labelR * Math.sin(a);
-          const dmx    = (outerR - 13) * Math.cos(a);
-          const dmy    = (outerR - 13) * Math.sin(a);
-          const lnX1   = (outerR + 8) * Math.cos(a);
-          const lnY1   = (outerR + 8) * Math.sin(a);
-          const lnX2   = (labelR - 13) * Math.cos(a);
-          const lnY2   = (labelR - 13) * Math.sin(a);
-          const active = i === lagna;
-          return (
-            <g key={name}>
-              {/* Connector line from ring to icon circle */}
-              <line x1={lnX1} y1={lnY1} x2={lnX2} y2={lnY2}
-                stroke={active ? "rgba(200,169,81,0.65)" : "rgba(255,255,255,0.12)"}
-                strokeWidth="0.7"
-              />
-              {/* Diamond marker on ring */}
-              <polygon
-                points={`${dmx},${dmy - 4} ${dmx + 4},${dmy} ${dmx},${dmy + 4} ${dmx - 4},${dmy}`}
-                fill={active ? "#c8a951" : "rgba(255,255,255,0.28)"}
-              />
-              {/* Icon circle background */}
-              <circle cx={lx} cy={ly} r={13}
-                fill="rgba(7,4,18,0.85)"
-                stroke={active ? "#c8a951" : "rgba(255,255,255,0.18)"}
-                strokeWidth={active ? 1.2 : 0.7}
-              />
-              {/* Zodiac glyph — 20×20 coordinate space centered at lx,ly */}
-              <g transform={`translate(${lx - 10},${ly - 10})`}>
-                <path d={path}
-                  fill="none"
-                  stroke={active ? "#c8a951" : "rgba(255,255,255,0.72)"}
-                  strokeWidth={active ? 1.9 : 1.35}
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                />
-              </g>
-            </g>
-          );
-        })}
-
-        {/* ── Middle dashed ring — counter-rotating slowly, fixed at center ── */}
+        {/* ── Outermost decorative ring ── */}
         <motion.g
           animate={{ rotate: -360 }}
-          style={{ originX: "0px", originY: "0px" }}
-          transition={{ duration: 80, repeat: Infinity, ease: "linear" }}
+          style={{ transformOrigin: "0px 0px" }}
+          transition={{ duration: 240, repeat: Infinity, ease: "linear" }}
         >
-          <circle cx={0} cy={0} r={midR}
-            fill="none" stroke="rgba(200,169,81,0.32)" strokeWidth="0.9"
-            strokeDasharray="5 9"
+          <circle cx={0} cy={0} r={labelR + 16}
+            fill="none" stroke="rgba(200,169,81,0.15)" strokeWidth="0.5"
+            strokeDasharray="4 8"
           />
         </motion.g>
 
-        {/* ── Inner ring ── */}
-        <circle cx={0} cy={0} r={innerR}
-          fill="none" stroke="rgba(200,169,81,0.52)" strokeWidth="1.2"
-        />
+        {/* ── MAIN ROTATING WHEEL (Outer Ring & Icons) ── */}
+        <motion.g
+          animate={{ rotate: 360 }}
+          style={{ transformOrigin: "0px 0px" }}
+          transition={{ duration: 120, repeat: Infinity, ease: "linear" }}
+        >
+          {/* ── Outer ring circle ── */}
+          <circle cx={0} cy={0} r={outerR}
+            fill="none" stroke="rgba(200,169,81,0.55)" strokeWidth="1.2"
+          />
 
-        {/* ── Sri Yantra triangles ── */}
-        {/* Outer pair */}
-        <polygon
-          points={`0,${-innerR + 10} ${(innerR-10)*0.866},${(innerR-10)*0.5} ${-(innerR-10)*0.866},${(innerR-10)*0.5}`}
-          fill="rgba(200,169,81,0.07)" stroke="rgba(200,169,81,0.88)" strokeWidth="1.5"
-        />
-        <polygon
-          points={`0,${innerR - 10} ${(innerR-10)*0.866},${-(innerR-10)*0.5} ${-(innerR-10)*0.866},${-(innerR-10)*0.5}`}
-          fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.72)" strokeWidth="1.5"
-        />
-        {/* Inner pair */}
-        <polygon
-          points={`0,${-innerR + 26} ${(innerR-26)*0.866},${(innerR-26)*0.5} ${-(innerR-26)*0.866},${(innerR-26)*0.5}`}
-          fill="rgba(200,169,81,0.04)" stroke="rgba(200,169,81,0.52)" strokeWidth="1"
-        />
-        <polygon
-          points={`0,${innerR - 26} ${(innerR-26)*0.866},${-(innerR-26)*0.5} ${-(innerR-26)*0.866},${-(innerR-26)*0.5}`}
-          fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.42)" strokeWidth="1"
-        />
+          {/* ── Tick marks ── */}
+          <g>
+            {/* Major ticks at every 30° */}
+            {Array.from({ length: 12 }, (_, i) => {
+              const a = (i * 30 - 90) * (Math.PI / 180);
+              return (
+                <line key={i}
+                  x1={(outerR - 7) * Math.cos(a)} y1={(outerR - 7) * Math.sin(a)}
+                  x2={(outerR + 7) * Math.cos(a)} y2={(outerR + 7) * Math.sin(a)}
+                  stroke="rgba(200,169,81,0.75)" strokeWidth="1.2"
+                />
+              );
+            })}
+            {/* Minor ticks at every 10° */}
+            {Array.from({ length: 36 }, (_, i) => {
+              if (i % 3 === 0) return null;
+              const a = (i * 10 - 90) * (Math.PI / 180);
+              return (
+                <line key={i}
+                  x1={(outerR - 3) * Math.cos(a)} y1={(outerR - 3) * Math.sin(a)}
+                  x2={(outerR + 3) * Math.cos(a)} y2={(outerR + 3) * Math.sin(a)}
+                  stroke="rgba(200,169,81,0.3)" strokeWidth="0.7"
+                />
+              );
+            })}
+          </g>
 
-        {/* ── 8-petal lotus ── */}
-        {Array.from({ length: 8 }, (_, i) => {
-          const a = (i * 45) * (Math.PI / 180);
-          const x = 28 * Math.cos(a);
-          const y = 28 * Math.sin(a);
-          return (
-            <ellipse key={i} cx={x} cy={y} rx={8.5} ry={4}
-              fill="none" stroke="rgba(200,169,81,0.38)" strokeWidth="0.8"
-              transform={`rotate(${i * 45} ${x} ${y})`}
-            />
-          );
-        })}
+          {/* ── Zodiac icons + connector lines + diamond markers ── */}
+          {zodiacPaths.map(([name, path], i) => {
+            const a      = (i * 30 - 90) * (Math.PI / 180);
+            const lx     = labelR * Math.cos(a);
+            const ly     = labelR * Math.sin(a);
+            const dmx    = (outerR - 13) * Math.cos(a);
+            const dmy    = (outerR - 13) * Math.sin(a);
+            const lnX1   = (outerR + 8) * Math.cos(a);
+            const lnY1   = (outerR + 8) * Math.sin(a);
+            const lnX2   = (labelR - 13) * Math.cos(a);
+            const lnY2   = (labelR - 13) * Math.sin(a);
+            const active = i === lagna;
+            return (
+              <g key={name}>
+                {/* Connector line from ring to icon circle */}
+                <line x1={lnX1} y1={lnY1} x2={lnX2} y2={lnY2}
+                  stroke={active ? "rgba(200,169,81,0.65)" : "rgba(255,255,255,0.12)"}
+                  strokeWidth="0.7"
+                />
+                {/* Diamond marker on ring */}
+                <polygon
+                  points={`${dmx},${dmy - 4} ${dmx + 4},${dmy} ${dmx},${dmy + 4} ${dmx - 4},${dmy}`}
+                  fill={active ? "#c8a951" : "rgba(255,255,255,0.28)"}
+                />
+                
+                {/* ICON & BACKGROUND - Counter Rotating (Ferris Wheel effect) */}
+                <motion.g
+                  animate={{ rotate: -360 }}
+                  style={{ transformOrigin: `${lx}px ${ly}px` }}
+                  transition={{ duration: 120, repeat: Infinity, ease: "linear" }}
+                >
+                  {/* Icon circle background */}
+                  <circle cx={lx} cy={ly} r={13}
+                    fill="rgba(7,4,18,0.85)"
+                    stroke={active ? "#c8a951" : "rgba(255,255,255,0.18)"}
+                    strokeWidth={active ? 1.2 : 0.7}
+                  />
+                  {/* Zodiac glyph — 20×20 coordinate space centered at lx,ly */}
+                  <g transform={`translate(${lx - 10},${ly - 10})`}>
+                    <path d={path}
+                      fill="none"
+                      stroke={active ? "#c8a951" : "rgba(255,255,255,0.72)"}
+                      strokeWidth={active ? 1.9 : 1.35}
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </g>
+                </motion.g>
+              </g>
+            );
+          })}
+        </motion.g>
 
-        {/* ── Center bindu ── */}
-        <circle cx={0} cy={0} r={15}
-          fill="none" stroke="rgba(200,169,81,0.38)" strokeWidth="0.8"
-        />
-        <motion.circle cx={0} cy={0} r={7}
-          fill="#c8a951"
-          animate={{ r: [7, 9, 7], opacity: [1, 0.75, 1] }}
-          transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-        />
-        <motion.circle cx={0} cy={0} r={13}
-          fill="none" stroke="rgba(200,169,81,0.55)" strokeWidth="0.9"
-          animate={{ opacity: [0.55, 1, 0.55] }}
-          transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-        />
+        {/* ── INNER RING & SRI YANTRA (Counter-Rotating) ── */}
+        <motion.g
+          animate={{ rotate: -360 }}
+          style={{ transformOrigin: "0px 0px" }}
+          transition={{ duration: 180, repeat: Infinity, ease: "linear" }}
+        >
+          {/* ── Inner ring ── */}
+          <circle cx={0} cy={0} r={innerR}
+            fill="none" stroke="rgba(200,169,81,0.52)" strokeWidth="1.2"
+          />
+
+          {/* ── Sri Yantra triangles ── */}
+          {/* Outer pair */}
+          <polygon
+            points={`0,${-innerR + 10} ${(innerR-10)*0.866},${(innerR-10)*0.5} ${-(innerR-10)*0.866},${(innerR-10)*0.5}`}
+            fill="rgba(200,169,81,0.07)" stroke="rgba(200,169,81,0.88)" strokeWidth="1.5"
+          />
+          <polygon
+            points={`0,${innerR - 10} ${(innerR-10)*0.866},${-(innerR-10)*0.5} ${-(innerR-10)*0.866},${-(innerR-10)*0.5}`}
+            fill="rgba(255,255,255,0.03)" stroke="rgba(255,255,255,0.72)" strokeWidth="1.5"
+          />
+          {/* Inner pair */}
+          <polygon
+            points={`0,${-innerR + 26} ${(innerR-26)*0.866},${(innerR-26)*0.5} ${-(innerR-26)*0.866},${(innerR-26)*0.5}`}
+            fill="rgba(200,169,81,0.04)" stroke="rgba(200,169,81,0.52)" strokeWidth="1"
+          />
+          <polygon
+            points={`0,${innerR - 26} ${(innerR-26)*0.866},${-(innerR-26)*0.5} ${-(innerR-26)*0.866},${-(innerR-26)*0.5}`}
+            fill="rgba(255,255,255,0.02)" stroke="rgba(255,255,255,0.42)" strokeWidth="1"
+          />
+        </motion.g>
+
+        {/* ── 8-PETAL LOTUS & BINDU (Forward-Rotating) ── */}
+        <motion.g
+          animate={{ rotate: 360 }}
+          style={{ transformOrigin: "0px 0px" }}
+          transition={{ duration: 150, repeat: Infinity, ease: "linear" }}
+        >
+          {/* ── 8-petal lotus ── */}
+          {Array.from({ length: 8 }, (_, i) => {
+            const a = (i * 45) * (Math.PI / 180);
+            const x = 28 * Math.cos(a);
+            const y = 28 * Math.sin(a);
+            return (
+              <ellipse key={i} cx={x} cy={y} rx={8.5} ry={4}
+                fill="none" stroke="rgba(200,169,81,0.38)" strokeWidth="0.8"
+                transform={`rotate(${i * 45} ${x} ${y})`}
+              />
+            );
+          })}
+
+          {/* ── Center bindu ── */}
+          <circle cx={0} cy={0} r={15}
+            fill="none" stroke="rgba(200,169,81,0.38)" strokeWidth="0.8"
+          />
+          <motion.circle cx={0} cy={0} r={7}
+            fill="#c8a951"
+            animate={{ r: [7, 9, 7], opacity: [1, 0.75, 1] }}
+            transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+          />
+          <motion.circle cx={0} cy={0} r={13}
+            fill="none" stroke="rgba(200,169,81,0.55)" strokeWidth="0.9"
+            animate={{ opacity: [0.55, 1, 0.55] }}
+            transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+          />
+        </motion.g>
 
       </svg>
     </div>
