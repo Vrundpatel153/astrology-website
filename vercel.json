@@ -1,0 +1,5 @@
+{
+  "buildCommand": "cd artifacts/mejuri-clone && pnpm run build",
+  "outputDirectory": "artifacts/mejuri-clone/dist/public",
+  "framework": "vite"
+}
