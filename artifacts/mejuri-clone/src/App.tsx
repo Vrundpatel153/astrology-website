@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { Switch, Route, Router as WouterRouter, useLocation } from "wouter";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { AnimatePresence, motion } from "framer-motion";
@@ -5,6 +6,7 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { CartProvider } from "@/context/CartContext";
 import { useLenis } from "@/hooks/useLenis";
+import { LoadingScreen } from "@/components/LoadingScreen";
 import NotFound from "@/pages/not-found";
 import Home from "@/pages/Home";
 import Shop from "@/pages/Shop";
@@ -59,14 +61,29 @@ function AnimatedRoutes() {
 }
 
 function App() {
+  const [isLoading, setIsLoading] = useState(true);
+
   return (
     <QueryClientProvider client={queryClient}>
       <TooltipProvider>
         <CartProvider>
-          <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
-            <AnimatedRoutes />
-          </WouterRouter>
-          <Toaster />
+          {isLoading && <LoadingScreen onComplete={() => setIsLoading(false)} />}
+          
+          <AnimatePresence>
+            {!isLoading && (
+              <motion.div
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                transition={{ duration: 0.8 }}
+                className="w-full min-h-screen"
+              >
+                <WouterRouter base={import.meta.env.BASE_URL.replace(/\/$/, "")}>
+                  <AnimatedRoutes />
+                </WouterRouter>
+                <Toaster />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </CartProvider>
       </TooltipProvider>
     </QueryClientProvider>
