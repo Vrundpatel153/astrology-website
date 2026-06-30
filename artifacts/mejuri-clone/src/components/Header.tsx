@@ -18,24 +18,24 @@ const SIDEBAR_SECTIONS = [
   {
     heading: "Shop",
     links: [
-      { label: "All Products",          href: "/shop" },
-      { label: "New Arrivals",          href: "/shop" },
-      { label: "Best Sellers",          href: "/shop" },
-      { label: "Bracelets",             href: "/shop" },
-      { label: "Pendants",              href: "/shop" },
-      { label: "Rings",                 href: "/shop" },
-      { label: "Necklaces & Mala",      href: "/shop" },
-      { label: "Ear Studs & Anklets",   href: "/shop" },
-      { label: "Gemstones & Raw Crystals", href: "/shop" },
-      { label: "Gifting",               href: "/shop" },
+      { label: "All Products",             href: "/shop" },
+      { label: "New Arrivals",             href: "/shop?filter=new" },
+      { label: "Best Sellers",             href: "/shop?filter=best" },
+      { label: "Bracelets",               href: "/shop?category=bracelets" },
+      { label: "Pendants",                href: "/shop?category=pendants" },
+      { label: "Rings",                   href: "/shop?category=rings" },
+      { label: "Necklaces & Mala",        href: "/shop?category=necklaces" },
+      { label: "Ear Studs & Anklets",     href: "/shop?category=ear-studs" },
+      { label: "Gemstones & Raw Crystals",href: "/shop?category=gemstones" },
+      { label: "Gifting",                 href: "/shop?filter=gifting" },
     ],
   },
   {
     heading: "Astrology",
     links: [
       { label: "Kundali Calculator",    href: "/kundali", gold: true },
-      { label: "Shop by Zodiac",        href: "/shop" },
-      { label: "Shop by Concern",       href: "/shop" },
+      { label: "Shop by Zodiac",        href: "/shop?filter=astrology" },
+      { label: "Shop by Concern",       href: "/shop?filter=concern" },
       { label: "Crystal Healing Guide", href: "/" },
       { label: "Book a Consultation",   href: "/kundali" },
     ],
@@ -114,13 +114,21 @@ export default function Header() {
         <div className="h-14 md:h-16 flex items-center justify-between px-4 md:px-6 max-w-[1600px] mx-auto">
 
           {/* Left */}
-          <div className="flex items-center flex-1">
+          <div className="flex items-center flex-1 gap-1">
             <motion.button
               className="md:hidden flex items-center justify-center w-9 h-9 -ml-1 text-[#2a1f1a]"
               onClick={() => setMenuOpen(true)}
               whileTap={{ scale: 0.9 }}
             >
               <Menu className="w-6 h-6 stroke-[1.5]" />
+            </motion.button>
+            {/* Search icon — mobile only, placed left */}
+            <motion.button
+              onClick={() => setSearchOpen(true)}
+              className="md:hidden flex items-center justify-center w-9 h-9 text-[#2a1f1a]"
+              whileTap={{ scale: 0.9 }}
+            >
+              <Search className="w-5 h-5 stroke-[1.5]" />
             </motion.button>
             <Link href="/">
               <motion.span
@@ -174,14 +182,6 @@ export default function Header() {
               <Search className="w-5 h-5 stroke-[1.5]" />
               <span className="text-xs font-medium uppercase tracking-widest">Search</span>
             </motion.button>
-            <motion.button
-              onClick={() => setSearchOpen(true)}
-              className="md:hidden"
-              whileTap={{ scale: 0.9 }}
-            >
-              <Search className="w-5 h-5 stroke-[1.5]" />
-            </motion.button>
-
             <motion.button
               onClick={() => navigate("/kundali")}
               className="md:hidden"

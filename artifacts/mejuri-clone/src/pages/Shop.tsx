@@ -1,5 +1,5 @@
-import { useState, useMemo } from "react";
-import { useLocation } from "wouter";
+import { useState, useMemo, useEffect } from "react";
+import { useLocation, useSearch } from "wouter";
 import { Heart, Plus, SlidersHorizontal, X, ShoppingBag, Sparkles } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 import Header from "@/components/Header";
@@ -15,27 +15,24 @@ const gemstones = [
   "Aquamarine","Labradorite","Malachite","Red Jasper","Fluorite",
 ];
 
-function getSearchParam(key: string) {
-  if (typeof window === "undefined") return null;
-  return new URLSearchParams(window.location.search).get(key);
-}
-
 export default function Shop() {
   const [, navigate] = useLocation();
+  const search = useSearch();
   const { addToCart } = useCart();
   const [wishlist, setWishlist] = useState<number[]>([]);
 
-  const initCategory = useMemo(() => {
-    const c = getSearchParam("category");
-    return c ? [c] : [];
-  }, []);
+  const filterParam = useMemo(() => new URLSearchParams(search).get("filter"), [search]);
+  const categoryParam = useMemo(() => new URLSearchParams(search).get("category"), [search]);
 
-  const initFilter = useMemo(() => getSearchParam("filter"), []);
-
-  const [selectedCategories, setSelectedCategories] = useState<string[]>(initCategory);
+  const [selectedCategories, setSelectedCategories] = useState<string[]>(categoryParam ? [categoryParam] : []);
   const [selectedGemstones, setSelectedGemstones] = useState<string[]>([]);
   const [mobileFilterOpen, setMobileFilterOpen] = useState(false);
   const [addedId, setAddedId] = useState<number | null>(null);
+
+  useEffect(() => {
+    setSelectedCategories(categoryParam ? [categoryParam] : []);
+    setSelectedGemstones([]);
+  }, [categoryParam]);
 
   const toggleWishlist = (id: number) =>
     setWishlist(prev => prev.includes(id) ? prev.filter(i => i !== id) : [...prev, id]);
@@ -47,10 +44,10 @@ export default function Shop() {
     setSelectedGemstones(prev => prev.includes(id) ? prev.filter(g => g !== id) : [...prev, id]);
 
   const baseProducts = useMemo(() => {
-    if (initFilter === "new") return newArrivals;
-    if (initFilter === "best") return bestSellers;
+    if (filterParam === "new") return newArrivals;
+    if (filterParam === "best") return bestSellers;
     return products;
-  }, [initFilter]);
+  }, [filterParam]);
 
   const filteredProducts = useMemo(() => baseProducts.filter(p => {
     const catMatch = selectedCategories.length === 0 || selectedCategories.includes(p.category);
