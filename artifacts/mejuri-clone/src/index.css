@@ -119,6 +119,39 @@
 @layer base {
   * {
     @apply border-border;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+  }
+
+  *::-webkit-scrollbar {
+    display: none;
+  }
+
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: #c9957a transparent;
+  }
+
+  html::-webkit-scrollbar {
+    display: block;
+    width: 3px;
+  }
+
+  html::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  html::-webkit-scrollbar-thumb {
+    background-color: #c9957a;
+    border-radius: 2px;
+  }
+
+  html::-webkit-scrollbar-thumb:hover {
+    background-color: #2a1f1a;
+  }
+
+  html::-webkit-scrollbar-corner {
+    background: transparent;
   }
 
   body {
