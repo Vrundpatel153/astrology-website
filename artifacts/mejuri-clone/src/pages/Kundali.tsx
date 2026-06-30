@@ -530,7 +530,7 @@ export default function Kundali() {
   const [error, setError] = useState("");
   const [result, setResult] = useState<KundaliResult | null>(null);
   const [birthData, setBirthData] = useState<BirthData | null>(null);
-  const [activeTab, setActiveTab] = useState<"chart" | "planets" | "crystals" | "yogas">("chart");
+  const [activeTab, setActiveTab] = useState<"chart" | "planets" | "crystals" | "yogas">("crystals");
 
   const heroRef   = useRef<HTMLDivElement>(null);
   const formRef   = useRef<HTMLFormElement>(null);
@@ -579,7 +579,7 @@ export default function Kundali() {
       const data: BirthData = { ...form, latitude: lat, longitude: lon };
       setBirthData(data);
       setResult(calculateKundali(data));
-      setActiveTab("chart");
+      setActiveTab("crystals");
     } catch {
       setError("Could not geocode that location. Try a major city name.");
     } finally { setLoading(false); }
