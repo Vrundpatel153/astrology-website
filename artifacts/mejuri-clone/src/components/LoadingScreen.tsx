@@ -5,11 +5,10 @@ export function LoadingScreen({ onComplete }: { onComplete: () => void }) {
   const [isVisible, setIsVisible] = useState(true);
 
   useEffect(() => {
-    // Keep the loading screen visible for the duration of the animation, plus a small delay
     const timer = setTimeout(() => {
       setIsVisible(false);
-      setTimeout(onComplete, 800); // give time for the fade-out animation
-    }, 3500);
+      setTimeout(onComplete, 900); // 900ms fade-out transition
+    }, 1600); // Start fade-out exactly when drawing finishes (1.5s draw + 0.1s delay)
 
     return () => clearTimeout(timer);
   }, [onComplete]);
@@ -20,7 +19,7 @@ export function LoadingScreen({ onComplete }: { onComplete: () => void }) {
         <motion.div
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
-          transition={{ duration: 0.8, ease: "easeInOut" }}
+          transition={{ duration: 0.9, ease: "easeInOut" }}
           className="fixed inset-0 z-50 flex items-center justify-center bg-[#070412]"
         >
           <div className="relative flex items-center justify-center w-full h-full max-w-lg px-8">
@@ -33,8 +32,8 @@ export function LoadingScreen({ onComplete }: { onComplete: () => void }) {
                 initial={{ pathLength: 0, opacity: 0 }}
                 animate={{ pathLength: 1, opacity: 1 }}
                 transition={{
-                  pathLength: { duration: 2.5, ease: "easeInOut", delay: 0.2 },
-                  opacity: { duration: 0.5 },
+                  pathLength: { duration: 1.5, ease: "easeInOut", delay: 0.1 },
+                  opacity: { duration: 0.4 },
                 }}
                 fill="none"
                 stroke="#c8a951"
