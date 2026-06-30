@@ -242,14 +242,17 @@ function VedicMandala({ lagna = 0 }: { lagna?: number }) {
           );
         })}
 
-        {/* ── Middle dashed ring — counter-rotating slowly ── */}
-        <motion.circle cx={0} cy={0} r={midR}
-          fill="none" stroke="rgba(200,169,81,0.32)" strokeWidth="0.9"
-          strokeDasharray="5 9"
+        {/* ── Middle dashed ring — counter-rotating slowly, fixed at center ── */}
+        <motion.g
           animate={{ rotate: -360 }}
           style={{ originX: "0px", originY: "0px" }}
-          transition={{ duration: 240, repeat: Infinity, ease: "linear" }}
-        />
+          transition={{ duration: 80, repeat: Infinity, ease: "linear" }}
+        >
+          <circle cx={0} cy={0} r={midR}
+            fill="none" stroke="rgba(200,169,81,0.32)" strokeWidth="0.9"
+            strokeDasharray="5 9"
+          />
+        </motion.g>
 
         {/* ── Inner ring ── */}
         <circle cx={0} cy={0} r={innerR}
